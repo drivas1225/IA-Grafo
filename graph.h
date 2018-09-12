@@ -52,8 +52,8 @@ public:
             }
 
         };
-        int pathBetweenNodes(N from, N To, vector<N> &vec);
-        bool pathBetweenNodesRecursive(Node *, N, vector<Node*> &, int &);
+        E pathBetweenNodes(N from, N To, vector<N> &vec);
+        bool pathBetweenNodesRecursive(Node *, N, vector<Node*> &, E &);
 
         const vector<Node*> & getNodesList() const{
             return m_nodes;

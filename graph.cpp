@@ -61,16 +61,17 @@ bool CGraph<N,E>::removeNode(N x)
 	for(int i=0; i< m_nodes.size(); i++){
 		if(m_nodes[i]->m_data == x){
 			tmp = m_nodes[i];
+
 			for(int j=0; j<tmp->m_edges.size(); j++)
-				removeEdge(tmp->m_edges[i]->m_data, tmp->m_edges[i]->m_node[0]->m_data, tmp->m_edges[i]->m_node[1]->m_data);
+				removeEdge(tmp->m_edges[j]->m_data, tmp->m_edges[j]->m_node[0]->m_data, tmp->m_edges[j]->m_node[1]->m_data);
 
 			cout << ">> [OK]: Node "<< tmp->m_data <<" Deleting ... " << endl;
 			m_nodes.erase(m_nodes.begin()+i);
 		}
 	}
 
-    printNodes();
-	printEdges();
+    //printNodes();
+	//printEdges();
 	return 1;
 }
 
@@ -89,10 +90,14 @@ bool CGraph<N,E>::removeEdge(E x, N a, N b)
 			borrar = Na->m_edges[i];
 			Na->m_edges.erase(Na->m_edges.begin()+i);
 		}
-
+    for(int i=0; i< Nb->m_edges.size() ;i++)
+		if(Nb->m_edges[i]->m_data==x){
+			borrar = Nb->m_edges[i];
+			Nb->m_edges.erase(Nb->m_edges.begin()+i);
+		}
 	delete borrar;
-    cout << ">> [OK]: Removing edge: " + Na->m_data +" - "+ Nb->m_data << endl;
-	printEdges();
+    cout << ">> [OK]: Removing edge: " << Na->m_data <<" - "<< Nb->m_data << endl;
+	//printEdges();
 	return 1;
 }
 
@@ -152,7 +157,7 @@ int CGraph<N,E>::getRandomNumber(int min, int max) {
 };
 
 template<class N, class E>
-int CGraph<N,E>::pathBetweenNodes(N from, N To, vector<N> &vec){
+E CGraph<N,E>::pathBetweenNodes(N from, N To, vector<N> &vec){
     Node *fromNode = nullptr;
     Node* ToNode = nullptr;
     for(const auto &node: m_nodes){
@@ -160,7 +165,7 @@ int CGraph<N,E>::pathBetweenNodes(N from, N To, vector<N> &vec){
         if(node->m_data == To) ToNode = node;
     }
     vector<Node*>vec2;
-    int costo = 0;
+    E costo = 0;
     this->pathBetweenNodesRecursive(fromNode, To, vec2, costo);
     vec2.push_back(fromNode);
     for(const auto &i: vec2)vec.push_back(i->m_data);
@@ -168,7 +173,7 @@ int CGraph<N,E>::pathBetweenNodes(N from, N To, vector<N> &vec){
 };
 
 template<class N, class E>
-bool CGraph<N,E>::pathBetweenNodesRecursive(Node* current, N To, vector<Node*> &vec, int& costo){
+bool CGraph<N,E>::pathBetweenNodesRecursive(Node* current, N To, vector<Node*> &vec, E& costo){
     if(current == nullptr) return false;
     if(current->m_data == To) {
         return true;
